@@ -37,6 +37,7 @@ pub struct Contract {
     pub accounts: LookupSet<PublicKey>,
     pub base_cost: Balance,
     pub min_cost: Balance,
+    pub after_sale_cost: Balance,
     pub percent_off: u8,
     // Royalties
     royalties: LazyOption<Royalties>,
@@ -94,6 +95,7 @@ impl Contract {
         size: u32,
         base_cost: U128,
         min_cost: U128,
+        after_sale_cost: U128,
         percent_off: Option<u8>,
         icon: Option<String>,
         spec: Option<String>,
@@ -119,6 +121,7 @@ impl Contract {
             size,
             base_cost,
             min_cost,
+            after_sale_cost,
             percent_off.unwrap_or(DEFAULT_SUPPLY_FATOR_NUMERATOR),
             royalties,
             is_premint.unwrap_or(false),
@@ -134,6 +137,7 @@ impl Contract {
         size: u32,
         base_cost: U128,
         min_cost: U128,
+        after_sale_cost: U128,
         percent_off: u8,
         royalties: Option<Royalties>,
         is_premint: bool,
@@ -155,6 +159,7 @@ impl Contract {
             accounts: LookupSet::new(StorageKey::LinkdropKeys),
             base_cost: base_cost.0,
             min_cost: min_cost.0,
+            after_sale_cost: after_sale_cost.0,
             percent_off,
             royalties: LazyOption::new(StorageKey::Royalties, royalties.as_ref()),
             whitelist: LookupMap::new(StorageKey::WhiteList),
@@ -193,6 +198,8 @@ impl Contract {
         self.is_premint = false;
         self.is_premint_over = true;
         self.percent_off = 0;
+        self.base_cost = self.after_sale_cost;
+        self.min_cost = self.after_sale_cost;
     }
 
     #[payable]
@@ -246,7 +253,9 @@ impl Contract {
             env::storage_usage() - initial_storage_usage,
             self.tokens.owner_id.clone(),
         );
-
+        if self.is_premint {
+            self.whitelist.insert(&owner_id, &true);
+        }
         // Emit mint event log
         log_mint(
             owner_id.as_str(),
@@ -377,7 +386,8 @@ impl Contract {
     fn assert_owner(&self) {
         require!(self.is_owner(), "Method is private to owner")
     }
-
+    
+    
     fn is_owner(&self) -> bool {
         env::signer_account_id() == self.tokens.owner_id
     }
