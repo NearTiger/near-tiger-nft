@@ -26,6 +26,7 @@ let config = {
         'nft_supply_for_owner',
         'nft_total_supply',
         'nft_tokens',
+        'nft_token',
         'nft_tokens_for_owner',
         'tokens_left',
         'cost_of_linkdrop',
@@ -61,7 +62,14 @@ async function main() {
         ...config.contractMethods,
       });
    console.log(await contract.tokens_left());
- 
+
+   let metadata  = await contract.nft_token({ "token_id": "1" })
+   for (let i = 1000; i < 2000; i ++) {
+    let metadata  = await contract.nft_token({ "token_id": i.toString() })
+    if (metadata != null) {
+        console.log("Token:", i, "Owner:", metadata.owner_id);
+    }
+   }
 }
 
 main()
