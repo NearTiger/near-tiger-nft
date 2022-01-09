@@ -22,7 +22,7 @@ const isMainnet = () => process.env.NODE_ENV == "mainnet";
 
 //change this
 //const contractId = isMainnet() ? "louisa_nft.near" : "tiger7.testnet";
-const contractId = "tigercheck4.near";
+const contractId = "neartiger.near";
 console.log(contractId)
 const linkdrop_contract = isMainnet() ? "near" : "testnet";
 
@@ -43,7 +43,7 @@ async function main() {
   
   const near = await connect(config);
  
-  const account = await near.account("tigercheck4.near");
+  const account = await near.account("neartiger.near");
   
   const { connection } = near;
 
@@ -62,11 +62,11 @@ async function main() {
         functionCall(
           "new_default_meta",
           {
-            owner_id: "tigercheck4.near",
+            owner_id: "neatiger.near",
             name: "Near Tiger Academy",
             symbol: "NTA",
-            uri: "https://ipfs.io/ipfs/bafybeietwqswx3tqom6jjirp7u4h6mjvbrndg2ojbzspums4c4gog7ydpe",
-            size: 3, // fill in
+            uri: "https://ipfs.io/ipfs/bafybeidpo2amr6yrm2pquzirt47a75plvioegxhr5hdnmjmc7djrsryeoq",
+            size: 1, // fill in
             base_cost: NEAR.parse("0.5 N"),
             min_cost: NEAR.parse("0.5 N"),
             after_sale_cost: NEAR.parse("0.5 N"),
